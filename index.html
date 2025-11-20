@@ -678,14 +678,16 @@
 
 /* FIX GALLERY MOBILE */
 @media (max-width: 768px) {
-    .gallery-carousel { 
-        height: 720px;   /* supaya muat 3 baris */
-        padding: 10px 20px;
-        gap: 10px;
+    .radio-group {
+        gap: 0.4rem;   /* antar opsi Hadir/Tidak Hadir jadi lebih rapat */
     }
 
     .radio-group label {
-        gap: 6px;   /* supaya Hadir / Tidak Hadir dekat dengan radio */
+        gap: 4px !important;   /* jarak radio → teks makin dekat */
+    }
+
+    .radio-group input[type="radio"] {
+        transform: scale(1.2); /* radio sedikit dibesarkan biar lebih gampang diklik di mobile */
     }
 }
 
