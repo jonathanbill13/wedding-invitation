@@ -465,7 +465,19 @@
         opacity: 0.8; 
         font-size: 1.1rem; 
     }
-    
+    .no-gift-icon {
+    margin: 1.5rem auto 1rem auto;
+    text-align: center;
+    opacity: 0.9;
+}
+
+.no-gift-icon img {
+    width: 90px;
+    height: auto;
+    opacity: 0.85;
+    filter: drop-shadow(0 0 6px rgba(212,175,55,0.35));
+}
+
     .rsvp-form, .wish-form { max-width: 500px; width: 100%; }
     .form-group { margin-bottom: 1.2rem; text-align: left; transition: opacity 0.3s ease; }
     .form-group label { display: block; margin-bottom: 0.5rem; font-size: 0.9rem; opacity: 0.9; }
@@ -583,6 +595,87 @@
             max-width: none;
         }
     }
+
+/* === CUSTOM FONT: RUSILLA SERIF === */
+@font-face {
+    font-family: 'RusillaSerif';
+    src: url('fonts/RusillaSerif.woff2') format('woff2'),
+         url('fonts/RusillaSerif.woff') format('woff'),
+         url('fonts/RusillaSerif.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Pakai Rusilla Serif untuk Billy & Vydia (judul utama intro) */
+.intro-title-wrapper h1 {
+    font-family: 'RusillaSerif', 'Playfair Display', serif !important;
+    font-size: 7rem; 
+    font-weight: 900;
+    margin: 20px 0; 
+    line-height: 0.95; 
+    color: var(--gold-light);
+
+    /* TEXT OUTLINE – lebih tipis */
+    -webkit-text-stroke: 0.7px var(--gold-dark);
+    text-stroke: 0.7px var(--gold-dark);
+
+    text-shadow: 
+        0 0 12px rgba(0,0,0,0.5),
+        0 0 20px rgba(255,215,0,0.15);
+}
+
+/* SECTION GIFT */
+.gift-section {
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    background-color: rgba(var(--navy-dark-rgb), 0.85);
+    padding: 80px 20px;
+}
+
+/* MODAL */
+.gift-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(3px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.gift-modal.active {
+    display: flex;
+}
+
+.gift-modal-content {
+    background: rgba(10, 29, 59, 0.95);
+    border: 1px solid var(--gold-accent);
+    border-radius: 12px;
+    padding: 2.5rem;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    text-align: center;
+}
+
+.gift-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-size: 2.5rem;
+    cursor: pointer;
+    color: var(--white);
+}
+
+.gift-detail-line {
+    margin: 12px 0;
+    font-size: 1.1rem;
+}
+
   </style>
 </head>
 <body>
@@ -708,8 +801,11 @@
             <h2>RSVP</h2>
             <div class="section-line-decorative"></div>
         </div>
-        <p class="anim-fade">It will be our pleasure to welcome you to this most joyous occasion. Please fill the form below to confirm your attendance.</p>
-        
+        <p class="anim-fade">It will be our pleasure to welcome you to this most joyous occasion. Your presence is the greatest gift to us, and therefore we kindly ask not to bring any physical gifts.</p>
+        <div class="no-gift-icon anim-fade">
+    <img src="images/no-gift.png" alt="No Gift" />
+</div>
+
         <form class="rsvp-form anim-fade" 
               action="https://docs.google.com/forms/d/e/1FAIpQLSct5Xe8qT7GGYeuTyRAH47_pcsy4CFtQ18L-Qb3I01haFU4Zw/formResponse" 
               method="POST" 
@@ -772,6 +868,55 @@
             <button type="submit" class="form-submit-btn">Send Message</button>
         </form>
     </section>
+
+<!-- ============================
+     SECTION: WEDDING GIFT
+============================= -->
+<section class="gift-section" id="giftSection">
+    <div class="section-heading-wrapper anim-fade">
+        <p class="section-heading-sub">For Your Convenience</p>
+        <h2>Wedding Gift</h2>
+        <div class="section-line-decorative"></div>
+    </div>
+
+    <p class="anim-fade" style="max-width: 520px; text-align:center; opacity:0.8;">
+        For friends and family who wish to send a wedding gift, you may do so through the account below.
+    </p>
+
+    <button class="btn anim-fade" id="openGiftModal" style="margin-top:1.5rem;">
+        Send a Gift
+    </button>
+</section>
+
+<!-- ============================
+     MODAL FOR BANK DETAILS
+============================= -->
+<div class="gift-modal" id="giftModal">
+    <div class="gift-modal-content">
+        <span class="gift-modal-close">&times;</span>
+        <h2 style="margin-top:0; color:var(--gold-light); font-family:'Playfair Display',serif;">
+            Wedding Gift Details
+        </h2>
+
+        <div class="gift-detail-line">
+            <strong>Bank:</strong> BCA
+        </div>
+        <div class="gift-detail-line">
+            <strong>Account Name:</strong> Jonathan Billy CT
+        </div>
+        <div class="gift-detail-line">
+            <strong>Account Number:</strong> <span id="rekNumber">0151624269</span>
+        </div>
+
+        <button id="copyRekBtn" class="btn" style="margin-top:20px;">
+            Copy Account Number
+        </button>
+
+        <p id="copyNotif" style="opacity:0; margin-top:10px; color:var(--gold-light); transition:0.3s;">
+            Copied to clipboard ✓
+        </p>
+    </div>
+</div>
 
     <section class="thank-you-section" id="thankYouSection">
         <div class="section-heading-wrapper anim-fade" style="margin-bottom: 0;">
@@ -1063,6 +1208,36 @@
       loadAndDisplayWishes(); 
       setInterval(loadAndDisplayWishes, 30000); 
     })();
+
+// GIFT MODAL LOGIC
+const giftModal = document.getElementById("giftModal");
+const openGiftModal = document.getElementById("openGiftModal");
+const giftModalClose = document.querySelector(".gift-modal-close");
+const copyRekBtn = document.getElementById("copyRekBtn");
+const rekText = document.getElementById("rekNumber");
+const copyNotif = document.getElementById("copyNotif");
+
+openGiftModal.addEventListener("click", () => {
+    giftModal.classList.add("active");
+});
+
+giftModalClose.addEventListener("click", () => {
+    giftModal.classList.remove("active");
+});
+
+giftModal.addEventListener("click", (e) => {
+    if (e.target === giftModal) {
+        giftModal.classList.remove("active");
+    }
+});
+
+copyRekBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(rekText.innerText).then(() => {
+        copyNotif.style.opacity = "1";
+        setTimeout(() => copyNotif.style.opacity = "0", 1500);
+    });
+});
+
   </script>
 </body>
 </html>
