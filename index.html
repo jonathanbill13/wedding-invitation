@@ -676,18 +676,24 @@
     font-size: 1.1rem;
 }
 
-/* FIX GALLERY MOBILE */
 @media (max-width: 768px) {
+
+    /* Bikin radio stacking di mobile */
     .radio-group {
-        gap: 0.4rem;   /* antar opsi Hadir/Tidak Hadir jadi lebih rapat */
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.4rem;    /* jarak antar opsi */
     }
 
     .radio-group label {
-        gap: 4px !important;   /* jarak radio → teks makin dekat */
+        display: flex;
+        align-items: center;
+        gap: 6px !important; /* jarak radio ↔ teks */
+        font-size: 1rem;
     }
 
     .radio-group input[type="radio"] {
-        transform: scale(1.2); /* radio sedikit dibesarkan biar lebih gampang diklik di mobile */
+        transform: scale(1.2);   /* lebih gampang di-klik */
     }
 }
 
