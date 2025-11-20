@@ -13,9 +13,7 @@
       --gold-accent: #D4AF37;
     }
     *{box-sizing:border-box}
-    html {
-        scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
     body{
       font-family: 'Raleway', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
       background:var(--navy-1);
@@ -24,6 +22,7 @@
       overflow-x:hidden;
       font-size:1.44rem;
       line-height:1.4;
+      margin: 0; /* Reset margin body */
     }
 
     /* LANDING (fixed) */
@@ -44,10 +43,12 @@
     .scroll-wrapper {
         position: relative;
         width: 100%;
-        /* FIX: Tinggi total ditambah menjadi 7x tinggi layar */
-        height: 700vh;
+        height: 700vh; /* Tetap 7 halaman */
     }
     
+    /* COMMON SECTION STYLE */
+    section { box-sizing: border-box; }
+
     /* INTRODUCTION SECTION */
     .intro-section {
         height: 100vh;
@@ -99,7 +100,7 @@
     .profile-card p { font-size: 0.9rem; line-height: 1.5; opacity: 0.8; margin: 0.2rem 0; }
     .separator-line { width: 1px; height: 250px; background-color: var(--gold-accent); opacity: 0.5; }
 
-    /* GALERI SECTION - UPDATE BACKGROUND */
+    /* GALERI SECTION - STATIC GRID & PARALLAX FEEL */
     .gallery-section {
         height: 100vh;
         position: absolute;
@@ -112,22 +113,92 @@
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        
-        /* UPDATE: Background ditambahkan disini */
-        /* Pastikan ada file images/bg-gallery.jpg atau ganti namanya sesuai filemu */
-        background: linear-gradient(rgba(10, 29, 59, 0.85), rgba(10, 29, 59, 0.85)), url('images/bg-gallery.jpg') center center/cover no-repeat;
-        
+        /* Background Fixed agar efek parallax saat scroll halaman utama */
+        background: linear-gradient(rgba(10, 29, 59, 0.9), rgba(10, 29, 59, 0.9)), url('images/bg-gallery.jpg') center center/cover fixed no-repeat;
         overflow: hidden;
-        gap: 2rem;
-        padding: 2rem 0;
+        padding: 2rem 5%;
     }
-    .gallery-section h2 { font-family: serif; font-size: 2.5rem; font-weight: 600; opacity: 0.9; }
-    .gallery-row { display: flex; width: max-content; }
-    .gallery-track { display: flex; animation: scroll 40s linear infinite; }
-    .gallery-row.reverse .gallery-track { animation-direction: reverse; }
-    .gallery-track img { height: 150px; width: 266px; object-fit: cover; border-radius: 10px; margin: 0 1rem; transition: transform 0.3s ease; border: 3px solid var(--gold-accent); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-    .gallery-track img:hover { transform: scale(1.05); }
-    @keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+    .gallery-section h2 { font-family: serif; font-size: 2.5rem; font-weight: 600; margin-bottom: 1.5rem; text-align: center; }
+    
+    /* Grid Container */
+    .gallery-grid {
+        display: grid;
+        /* Grid responsif: kolom menyesuaikan ukuran layar */
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); 
+        gap: 15px;
+        width: 100%;
+        max-width: 1000px;
+        max-height: 70vh; /* Supaya tidak melebihi layar */
+        overflow-y: auto; /* Bisa discroll kecil jika gambar banyak */
+        padding: 10px;
+        /* Scrollbar cantik */
+        scrollbar-width: thin;
+        scrollbar-color: var(--gold-accent) var(--navy-1);
+    }
+    .gallery-grid::-webkit-scrollbar { width: 8px; }
+    .gallery-grid::-webkit-scrollbar-thumb { background-color: var(--gold-accent); border-radius: 10px; }
+
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        cursor: pointer;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+        aspect-ratio: 1 / 1; /* Membuat kotak persegi */
+    }
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+    .gallery-item:hover {
+        border-color: var(--gold-accent);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+    }
+    .gallery-item:hover img {
+        transform: scale(1.1); /* Efek Zoom saat hover */
+    }
+
+    /* LIGHTBOX (ZOOM) */
+    .lightbox {
+        position: fixed;
+        z-index: 999;
+        top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+    .lightbox.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+    .lightbox img {
+        max-width: 90%;
+        max-height: 90%;
+        border: 2px solid var(--gold-accent);
+        border-radius: 4px;
+        box-shadow: 0 0 20px rgba(255,255,255,0.1);
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+    }
+    .lightbox.active img {
+        transform: scale(1);
+    }
+    .lightbox-close {
+        position: absolute;
+        top: 20px;
+        right: 30px;
+        font-size: 3rem;
+        color: white;
+        cursor: pointer;
+        user-select: none;
+    }
 
     /* COUNTDOWN SECTION */
     .count-section {
@@ -205,13 +276,9 @@
     .wish-card { background: #0c2144; border-radius: 8px; padding: 1rem; text-align: left; margin-bottom: 1rem; border-left: 3px solid var(--gold-accent); }
     .wish-card h3 { font-size: 1.1rem; margin: 0 0 0.5rem; color: var(--gold-accent); }
     .wish-card p { font-size: 0.9rem; margin: 0; opacity: 0.9; }
-    .wish-form textarea { 
-        /* FIX: Kolom ucapan diperbesar */
-        height: 130px; 
-        resize: vertical; 
-    }
+    .wish-form textarea { height: 130px; resize: vertical; }
 
-    /* HALAMAN BARU: PENUTUP / THANK YOU */
+    /* PENUTUP */
     .thank-you-section {
         height: 100vh;
         position: absolute;
@@ -227,29 +294,9 @@
         background-color: var(--navy-1);
         padding: 2rem;
     }
-    .thank-you-text {
-        font-family: serif;
-        font-size: 3rem;
-        font-weight: 600;
-        text-align: center;
-        max-width: 800px;
-        line-height: 1.4;
-        text-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
-    }
-    .gemini-credit {
-        position: absolute;
-        bottom: 2rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.8rem;
-        opacity: 0.5;
-        color: var(--muted);
-    }
-    .gemini-logo {
-        width: 16px;
-        height: 16px;
-    }
+    .thank-you-text { font-family: serif; font-size: 3rem; font-weight: 600; text-align: center; max-width: 800px; line-height: 1.4; text-shadow: 0 0 15px rgba(255, 255, 255, 0.1); }
+    .gemini-credit { position: absolute; bottom: 2rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; opacity: 0.5; color: var(--muted); }
+    .gemini-logo { width: 16px; height: 16px; }
 
     @media (max-width: 768px) {
         .profile-container { flex-direction: column; gap: 1rem; }
@@ -257,7 +304,12 @@
         .profile-card { width: 100%; flex-direction: column; gap: 1rem; }
         .profile-card.right { flex-direction: column; }
         .profile-card.left .profile-text, .profile-card.right .profile-text { text-align: center; }
-        .gallery-track img { height: 120px; width: 213px; }
+        
+        /* Gallery Mobile Adjustment */
+        .gallery-grid {
+            grid-template-columns: repeat(2, 1fr); /* 2 Kolom di HP */
+        }
+        
         .guestbook-section { gap: 1rem; }
         .wishes-display { height: 35%; }
         .thank-you-text { font-size: 2rem; }
@@ -292,38 +344,16 @@
     
     <section class="gallery-section" id="gallerySection">
         <h2>Our Memories Together</h2>
-        <div class="gallery-row">
-            <div class="gallery-track">
-                <img src="images/gallery/mem-01.jpg">
-                <img src="images/gallery/mem-02.jpg">
-                <img src="images/gallery/mem-03.jpg">
-                <img src="images/gallery/mem-04.jpg">
-                <img src="images/gallery/mem-05.jpg">
-                <img src="images/gallery/mem-06.jpg">
-                <img src="images/gallery/mem-01.jpg">
-                <img src="images/gallery/mem-02.jpg">
-                <img src="images/gallery/mem-03.jpg">
-                <img src="images/gallery/mem-04.jpg">
-                <img src="images/gallery/mem-05.jpg">
-                <img src="images/gallery/mem-06.jpg">
+        <div class="gallery-grid">
+            <div class="gallery-item"><img src="images/gallery/mem-01.jpg" alt="Memory 1"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-02.jpg" alt="Memory 2"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-03.jpg" alt="Memory 3"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-04.jpg" alt="Memory 4"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-05.jpg" alt="Memory 5"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-06.jpg" alt="Memory 6"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-07.jpg" alt="Memory 7"></div>
+            <div class="gallery-item"><img src="images/gallery/mem-08.jpg" alt="Memory 8"></div>
             </div>
-        </div>
-        <div class="gallery-row reverse">
-            <div class="gallery-track">
-                <img src="images/gallery/mem-07.jpg">
-                <img src="images/gallery/mem-08.jpg">
-                <img src="images/gallery/mem-09.jpg">
-                <img src="images/gallery/mem-10.jpg">
-                <img src="images/gallery/mem-11.jpg">
-                <img src="images/gallery/mem-12.jpg">
-                <img src="images/gallery/mem-07.jpg">
-                <img src="images/gallery/mem-08.jpg">
-                <img src="images/gallery/mem-09.jpg">
-                <img src="images/gallery/mem-10.jpg">
-                <img src="images/gallery/mem-11.jpg">
-                <img src="images/gallery/mem-12.jpg">
-            </div>
-        </div>
     </section>
 
     <section class="count-section" id="countSection">
@@ -373,6 +403,11 @@
     <source src="audio/music.mp3" type="audio/mpeg">
   </audio>
 
+  <div id="lightbox" class="lightbox">
+    <span class="lightbox-close">&times;</span>
+    <img id="lightbox-img" src="" alt="Zoomed Image">
+  </div>
+
   <script>
     (function(){
       const cover = document.getElementById('cover');
@@ -384,7 +419,7 @@
       const countSection = document.getElementById('countSection');
       const rsvpSection = document.getElementById('rsvpSection');
       const guestbookSection = document.getElementById('guestbookSection');
-      const thankYouSection = document.getElementById('thankYouSection'); // Elemen baru
+      const thankYouSection = document.getElementById('thankYouSection');
       const music = document.getElementById('bgMusic');
       
       const profileCards = document.querySelectorAll('.profile-card');
@@ -393,6 +428,26 @@
       const eventInfo = document.querySelector('.event-info');
       const radioKehadiran = document.querySelectorAll('input[name="kehadiran"]');
       const jumlahTamuWrapper = document.getElementById('jumlahTamuWrapper');
+
+      // Lightbox Logic
+      const lightbox = document.getElementById('lightbox');
+      const lightboxImg = document.getElementById('lightbox-img');
+      const lightboxClose = document.querySelector('.lightbox-close');
+      const galleryImages = document.querySelectorAll('.gallery-item img');
+
+      galleryImages.forEach(img => {
+        img.addEventListener('click', () => {
+            lightboxImg.src = img.src;
+            lightbox.classList.add('active');
+        });
+      });
+
+      // Tutup lightbox saat klik tombol X atau area gelap di luar gambar
+      lightbox.addEventListener('click', (e) => {
+        if (e.target !== lightboxImg) {
+            lightbox.classList.remove('active');
+        }
+      });
 
       document.body.style.overflow = 'hidden';
 
@@ -421,7 +476,7 @@
       });
 
       // =====================================================================
-      // SCRIPT SCROLL DIPERBARUI UNTUK 7 HALAMAN
+      // SCROLL LOGIC
       // =====================================================================
       let hasBrideGroomAnimated = false;
       let hasCountdownAnimated = false;
@@ -436,19 +491,38 @@
         rsvpSection.style.opacity = 0;
         guestbookSection.style.opacity = 0;
         thankYouSection.style.opacity = 0;
+        
+        // Pointer events none agar elemen transparan tidak menghalangi klik
+        brideGroomSection.style.pointerEvents = "none";
+        gallerySection.style.pointerEvents = "none";
+        countSection.style.pointerEvents = "none";
+        rsvpSection.style.pointerEvents = "none";
+        guestbookSection.style.pointerEvents = "none";
+        thankYouSection.style.pointerEvents = "none";
 
-        if (scrollPosition < vh) { // Zona 1: Intro -> Profil
+        if (scrollPosition < vh) { 
             let p = scrollPosition / vh; introSection.style.opacity = 1 - p; brideGroomSection.style.opacity = p;
-        } else if (scrollPosition < vh * 2) { // Zona 2: Profil -> Galeri
+            if(p > 0.5) brideGroomSection.style.pointerEvents = "auto";
+        } else if (scrollPosition < vh * 2) { 
             let p = (scrollPosition - vh) / vh; brideGroomSection.style.opacity = 1 - p; gallerySection.style.opacity = p;
-        } else if (scrollPosition < vh * 3) { // Zona 3: Galeri -> Countdown
+            if(p > 0.5) gallerySection.style.pointerEvents = "auto";
+            else brideGroomSection.style.pointerEvents = "auto";
+        } else if (scrollPosition < vh * 3) { 
             let p = (scrollPosition - vh * 2) / vh; gallerySection.style.opacity = 1 - p; countSection.style.opacity = p;
-        } else if (scrollPosition < vh * 4) { // Zona 4: Countdown -> RSVP
+            if(p > 0.5) countSection.style.pointerEvents = "auto";
+            else gallerySection.style.pointerEvents = "auto";
+        } else if (scrollPosition < vh * 4) { 
             let p = (scrollPosition - vh * 3) / vh; countSection.style.opacity = 1 - p; rsvpSection.style.opacity = p;
-        } else if (scrollPosition < vh * 5) { // Zona 5: RSVP -> Buku Tamu
+            if(p > 0.5) rsvpSection.style.pointerEvents = "auto";
+            else countSection.style.pointerEvents = "auto";
+        } else if (scrollPosition < vh * 5) { 
             let p = (scrollPosition - vh * 4) / vh; rsvpSection.style.opacity = 1 - p; guestbookSection.style.opacity = p;
-        } else { // Zona 6: Buku Tamu -> Penutup
+            if(p > 0.5) guestbookSection.style.pointerEvents = "auto";
+            else rsvpSection.style.pointerEvents = "auto";
+        } else { 
             let p = (scrollPosition - vh * 5) / vh; guestbookSection.style.opacity = 1 - p; thankYouSection.style.opacity = p;
+            if(p > 0.5) thankYouSection.style.pointerEvents = "auto";
+            else guestbookSection.style.pointerEvents = "auto";
         }
 
         if (brideGroomSection.style.opacity > 0.5 && !hasBrideGroomAnimated) {
