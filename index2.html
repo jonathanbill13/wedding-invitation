@@ -401,7 +401,11 @@
         display: block; margin-bottom: 0.5rem; font-size: 0.9rem; opacity: 0.9; color: var(--gold-light); 
     }
     
-    .form-group input, .form-group select, .form-group textarea { 
+    /* PERBAIKAN UTAMA DI SINI: Gunakan :not([type="radio"]) */
+    /* Ini mencegah input radio terkena style width 100% dan padding besar */
+    .form-group input:not([type="radio"]), 
+    .form-group select, 
+    .form-group textarea { 
         width: 100%; padding: 1rem 1.2rem; border-radius: 12px; 
         border: 1px solid rgba(111, 142, 160, 0.3); 
         background-color: rgba(12, 33, 68, 0.8); 
@@ -413,9 +417,36 @@
         outline: none; border-color: var(--gold-accent); background-color: rgba(12, 33, 68, 1);
         box-shadow: 0 0 15px rgba(212, 175, 55, 0.3); transform: translateY(-2px);
     }
-    
-    .radio-group { display: flex; gap: 1.5rem; justify-content: center; }
-    .radio-group label { display: flex; align-items: center; gap: 0.5rem; cursor: pointer;}
+
+    /* STYLE KHUSUS RADIO BUTTON */
+    .form-group input[type="radio"] {
+        width: auto; /* Lebar otomatis mengikuti konten */
+        height: 1.2em;
+        margin: 0;
+        padding: 0; /* Reset padding agar tidak menimpa teks */
+        box-shadow: none;
+        transform: scale(1.3); /* Sedikit diperbesar agar mudah dipencet */
+        cursor: pointer;
+        accent-color: var(--gold-light); /* Warna centang gold */
+    }
+
+    /* CONTAINER RADIO & LABEL */
+    .radio-group { 
+        display: flex; 
+        gap: 2rem; /* Jarak antar opsi Hadir dan Tidak Hadir */
+        justify-content: center; 
+        flex-wrap: wrap; 
+        margin-top: 0.5rem;
+    }
+    .radio-group label { 
+        display: flex; 
+        align-items: center; 
+        gap: 0.8rem; /* Jarak antara bulatan radio dan teks */
+        cursor: pointer;
+        margin-bottom: 0; /* Reset margin label bawaan form-group */
+        width: auto; /* Pastikan label tidak melar */
+        font-size: 1.1rem;
+    }
     
     .form-submit-btn { 
         appearance:none; border:0; 
@@ -644,16 +675,16 @@
           
           <div class="event-info-wrapper">
             <div class="section-heading-wrapper" style="margin-bottom: 0;">
-                <h2 style="font-size:1.8rem; margin:0;">Orient Restaurant and Convention Hall</h2>
+                <h2 style="font-size:1.8rem; margin:0;">Royal Dynasty</h2>
             </div>
             <div class="event-info">
                 Saturday, December 20th 2025<br>
-                17.00 - selesai<br>
-                Jalan Slamet Riyadi No. 397, Laweyan, Surakarta
+                18.00 - selesai<br>
+                Orient Restaurant and Convention Hall, Solo
             </div>
           </div>
           
-          <a href="https://www.google.com/maps/search/?api=1&query=Orient+Restaurant+and+Convention+Hall+Surakarta" target="_blank" class="btn map-btn">View in Maps</a>
+          <a href="https://www.google.com/maps/search/?api=1&query=Orient+Restaurant+and+Convention+Hall+Solo" target="_blank" class="btn map-btn">View in Maps</a>
       </div>
     </section>
     
@@ -987,7 +1018,7 @@
           el.textContent = `${days} days ${hours} hours ${mins} minutes ${secs} seconds`;
         }, 1000);
       }
-      startCountdown('December 20, 2025 10:00:00');
+      startCountdown('December 20, 2025 18:00:00');
       
       
       // 6. GUESTBOOK LOGIC (Real-time via SheetDB)
