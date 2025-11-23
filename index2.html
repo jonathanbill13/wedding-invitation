@@ -679,8 +679,8 @@
             </div>
             <div class="event-info">
                 Saturday, December 20th 2025<br>
-                18.00 WIB - end<br>
-                Gate open: 17:30 WIB<br>
+                Open gate: 17:30 WIB<br>
+                18:00 WIB - selesai<br>
                 Jalan Slamet Riyadi No. 397, Laweyan, Surakarta
             </div>
           </div>
@@ -840,8 +840,8 @@
 
 
   <script>
-    // SheetDB API URL
-    const SHEETDB_URL = 'https://sheetdb.io/api/v1/1k82yget6p7mt';
+    // URL Backend Google Apps Script
+    const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzRJNb_I5rSCd_w2kDeQ35vt6n15UiD3imPx3RDb39pyeXLQpySuG6cbVDB93G7tNVR/exec';
 
     // VARIABEL GLOBAL
     let submitted = false;
@@ -1022,15 +1022,15 @@
       startCountdown('December 20, 2025 18:00:00');
       
       
-      // 6. GUESTBOOK LOGIC (Real-time via SheetDB)
+      // 6. GUESTBOOK LOGIC (Google Apps Script Backend)
       async function loadAndDisplayWishes() {
           try {
-              const response = await fetch(SHEETDB_URL);
+              const response = await fetch(GOOGLE_SCRIPT_URL);
               const storedWishes = await response.json();
 
               wishesDisplay.innerHTML = ''; 
 
-              if (!storedWishes || storedWishes.length === 0 || storedWishes.error) {
+              if (!storedWishes || storedWishes.length === 0 || storedWishes.result === 'error') {
                   wishesDisplay.innerHTML = '<p style="text-align: center; opacity: 0.7; margin-top: 50px;">No wishes yet. Be the first to write for the couple!</p>';
                   return;
               }
@@ -1047,8 +1047,8 @@
               });
 
           } catch (error) {
-              console.error('Failed to fetch wishes from SheetDB:', error);
-              wishesDisplay.innerHTML = '<p style="text-align: center; opacity: 0.7; margin-top: 50px; color: red;">Failed to load wishes. Check your API connection.</p>';
+              console.error('Failed to fetch wishes from Apps Script:', error);
+              wishesDisplay.innerHTML = '<p style="text-align: center; opacity: 0.7; margin-top: 50px; color: red;">Failed to load wishes.</p>';
           }
       }
 
@@ -1064,38 +1064,37 @@
               const currentTimestamp = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 
               const payload = {
-                  "Your Name": nameInput.value, 
-                  "Write Your Message": messageInput.value, 
-                  "timestamp": currentTimestamp 
-              };
+    "Your Name": nameInput.value,
+    "Write Your Message": messageInput.value,
+    "timestamp": currentTimestamp
+};
 
               const submitBtn = document.querySelector('.wish-form .form-submit-btn');
               submitBtn.textContent = 'Sending...';
               submitBtn.disabled = true;
 
               try {
-                  const response = await fetch(SHEETDB_URL, {
+                  const response = await fetch(GOOGLE_SCRIPT_URL, {
                       method: 'POST',
-                      headers: { 'Content-Type': 'application/json' },
-                      body: JSON.stringify({ data: [payload] }) 
+                      body: JSON.stringify(payload) 
                   });
 
                   const result = await response.json();
                   
-                  if (response.ok && result.created === 1) {
+                  if (result.result === 'success') {
                       loadAndDisplayWishes(); 
                       alert('Thank you! Your wish has been sent and will appear shortly.');
                       wishForm.reset();
                   } else {
-                      alert('Failed to send wish. Ensure your SheetDB column names are correct.');
-                      console.error('SheetDB Error:', result);
+                      alert('Failed to send wish.');
+                      console.error('Apps Script Error:', result);
                   }
 
               } catch (error) {
                   alert('A connection error occurred while sending the wish.');
                   console.error('Submission Error:', error);
               } finally {
-                  submitBtn.textContent = 'Send Wish';
+                  submitBtn.textContent = 'Send Message';
                   submitBtn.disabled = false;
               }
           });
@@ -1154,6 +1153,3 @@
   </script>
 </body>
 </html>
-
-
-
